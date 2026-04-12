@@ -42,7 +42,7 @@ new_file_path = filedialog.asksaveasfilename( # открывает окно дл
     filetypes=[("Текстовые файлы", "*.txt"), ("Все файлы", "*.*")],
 )
 
-model = whisper.load_model('small') #  выбор модели распознавания
+model = whisper.load_model('turbo') #  выбор модели распознавания
 messagebox.showinfo(
     title = 'Начало процесса',
     message = 'Начинаю процесс распознавания. Для продолжения нажмите ОК или закройте данное сообщение.'

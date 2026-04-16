@@ -57,20 +57,36 @@ def select_file_name():
         
         return new_file_name
     
+def select_save_path(): # открывает окно для выбора пути сохранения файла после распознавания, если файл с таким именем уже существует, говорит об этом пользователю, это базовая особенность
+    while True:
+        new_file_path = filedialog.asksaveasfilename(
+            title = 'Выберите папку для сохранения результата', 
+            initialfile = file_name, 
+            defaultextension='.txt',
+            filetypes=[("Текстовые файлы", "*.txt"), ("Все файлы", "*.*")],
+        )
+        
+        if new_file_path:
+            return new_file_path
+        
+        elif new_file_path == '':
+            messagebox.showwarning(
+                title = 'Ошибка выбора пути для сохранения файла',
+                message = 'Папка для сохранения файла не выбрана. Выберите папку для сохранения результата распознавания.'
+            )
+            continue  
+    
 root = tk.Tk() # создание главного окна приложения
 root.withdraw() # прячет главное окно для пользователя
 
 audio = select_audio() # выбор пути к аудио файлу
 print(f'Выбран файл: {audio}')
 
-file_name = select_file_name()
+file_name = select_file_name() # выбор имени файла
+print(f'Выбрано имя файла: {file_name}')
 
-new_file_path = filedialog.asksaveasfilename( # открывает окно для выбора пути сохранения файла после распознавания, если файл с таким именем уже существует, говорит об этом пользователю, это базовая особенность
-    title = 'Выберите папку для сохранения результата', 
-    initialfile = file_name, 
-    defaultextension='.txt',
-    filetypes=[("Текстовые файлы", "*.txt"), ("Все файлы", "*.*")],
-)
+file_path = select_save_path() # выбор пути сохранения файла
+print(f'Выбран путь для сохранения результата распознавания: {file_path}')
 
 model = whisper.load_model('turbo') #  выбор модели распознавания
 messagebox.showinfo(
@@ -78,7 +94,7 @@ messagebox.showinfo(
     message = 'Начинаю процесс распознавания. Для продолжения нажмите ОК или закройте данное сообщение.'
 )
 result = model.transcribe(audio, language = 'ru', fp16 = False, verbose = True)  # сохраняет в переменную результат транскрибации
-with open (new_file_path, 'w', encoding = 'utf-8') as f: # открывает файл, записывает в  поле текст результат и закрывает файл
+with open (file_path, 'w', encoding = 'utf-8') as f: # открывает файл, записывает в  поле текст результат и закрывает файл
     f.write(result['text'])
 messagebox.showinfo(
     title = 'Окончание процесса',
